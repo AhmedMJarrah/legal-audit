@@ -396,8 +396,11 @@ parent_names  = get_parent_ministries()
 c_entity, c_parent = st.columns(2)
 
 with c_entity:
-    current_entity = law.get("entity_audited","") or ""
-    entity_idx     = entity_names.index(current_entity) if current_entity in entity_names else 0
+    current_entity = str(law.get("entity_audited","") or "").strip()
+    if current_entity and current_entity in entity_names:
+        entity_idx = entity_names.index(current_entity)
+    else:
+        entity_idx = 0
     selected_entity = st.selectbox(
         "الجهة المعنية",
         options=entity_names,
@@ -414,8 +417,11 @@ with c_entity:
         )
 
 with c_parent:
-    current_parent = law.get("parent_ministry","") or ""
-    parent_idx     = parent_names.index(current_parent) if current_parent in parent_names else 0
+    current_parent = str(law.get("parent_ministry","") or "").strip()
+    if current_parent and current_parent in parent_names:
+        parent_idx = parent_names.index(current_parent)
+    else:
+        parent_idx = 0
     selected_parent = st.selectbox(
         "الوزارة الأم",
         options=parent_names,
