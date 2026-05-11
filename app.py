@@ -403,7 +403,6 @@ with c_entity:
         options=entity_names,
         index=entity_idx,
         key=f"entity_{cur_law}",
-        disabled=(scope == "جميع الجهات"),
     )
     custom_entity = ""
     if selected_entity == "أخرى":
@@ -422,7 +421,6 @@ with c_parent:
         options=parent_names,
         index=parent_idx,
         key=f"parent_{cur_law}",
-        disabled=(scope == "جميع الجهات"),
     )
     custom_parent = ""
     if selected_parent == "أخرى":
@@ -450,10 +448,6 @@ def save_and_next():
 
     final_entity = custom_entity if selected_entity == "أخرى" else selected_entity
     final_parent = custom_parent if selected_parent == "أخرى" else selected_parent
-
-    if scope == "جميع الجهات":
-        final_entity = ""
-        final_parent = ""
 
     try:
         save_law_audit(
