@@ -180,18 +180,30 @@ def upload_laws(spreadsheet, df: pd.DataFrame):
             clean(r.get("leg_name", "")),
             clean(r.get("leg_number", "")),
             clean(r.get("status", "ساري")),
-            "",   # scope
-            "",   # entity_audited
-            "",   # parent_ministry
-            "لم يُراجع",  # audit_status
-            "",   # audit_notes
-            "",   # assigned_to (username)
-            "",   # last_updated
+            clean(r.get("scope", "")),
+            clean(r.get("entity_audited", "")),
+            clean(r.get("parent_ministry", "")),
+            clean(r.get("audit_status", "لم يُراجع")),
+            clean(r.get("audit_notes", "")),
+            clean(r.get("assigned_to", "")),
+            clean(r.get("last_updated", "")),
         ])
 
     # Write in chunks
     for i in range(0, len(rows), 200):
         safe_call(lambda s=i: ws.append_rows(rows[s:s + 200]))
+
+    # Auto-extract entities and parent ministries from the file
+    if "entity_audited" in df.columns or "parent_ministry" in df.columns:
+        entities = sorted(df["entity_audited"].dropna().unique().tolist()) \
+                   if "entity_audited" in df.columns else []
+        parents  = sorted(df["parent_ministry"].dropna().unique().tolist()) \
+                   if "parent_ministry" in df.columns else []
+        # Also add custom_entity values if present
+        if "custom_entity" in df.columns:
+            customs = df["custom_entity"].dropna().unique().tolist()
+            entities = sorted(set(entities + customs))
+        upload_entities(spreadsheet, entities, parents)
 
     invalidate_laws()
     return len(rows) - 1
