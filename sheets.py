@@ -183,10 +183,10 @@ def upload_laws(spreadsheet, df: pd.DataFrame):
             clean(r.get("scope", "")),
             clean(r.get("entity_audited", "")),
             clean(r.get("parent_ministry", "")),
-            clean(r.get("audit_status", "لم يُراجع")),
-            clean(r.get("audit_notes", "")),
+            "لم يُراجع",  # always reset audit_status
+            "",           # audit_notes reset
             clean(r.get("assigned_to", "")),
-            clean(r.get("last_updated", "")),
+            "",           # last_updated reset
         ])
 
     # Write in chunks
